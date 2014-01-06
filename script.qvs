@@ -1,0 +1,40 @@
+﻿///$tab Main
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$#,##0.00;($#,##0.00)';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='M/D/YYYY';
+SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+
+// Created by Speros Kokenes
+///$tab Fact
+//Autogenerate degree groups of 5. Assign a text label at each 90 degree interval from 0
+Load Degrees,
+dual(if(mixmatch(Degrees,0,90,180,270),Degrees & '°',''),Degrees) as DegreesLabel
+;
+Load
+(recno()-1)*5 as Degrees
+autogenerate(72);
+
+// Randomize some event data
+Fact:
+Load
+floor(rand()*72)*5 as Degrees,
+recno() as EventID
+autogenerate(43);
+
+
+// Create the inverse of the event data for plotting across the globe
+Load
+EventID+1000 as EventID,
+if(Degrees>=180,Degrees-180,Degrees+180) as Degrees
+Resident Fact;
+
+// Load an isolated list of all degrees to be used for formatting purposes
+Load
+(recno()-1) as AllDegrees
+autogenerate(360);
