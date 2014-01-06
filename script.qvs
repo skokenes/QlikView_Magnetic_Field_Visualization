@@ -24,14 +24,16 @@ autogenerate(72);
 Fact:
 Load
 floor(rand()*72)*5 as Degrees,
-recno() as EventID
+recno() as EventID,
+'Original' as EventType
 autogenerate(43);
 
 
 // Create the inverse of the event data for plotting across the globe
 Load
 EventID+1000 as EventID,
-if(Degrees>=180,Degrees-180,Degrees+180) as Degrees
+if(Degrees>=180,Degrees-180,Degrees+180) as Degrees,
+'Inverse' as EventType
 Resident Fact;
 
 // Load an isolated list of all degrees to be used for formatting purposes
